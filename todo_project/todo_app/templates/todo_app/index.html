@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Shadows+Into+Light&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0000ff; /* Pure Blue */
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+
+    .header {
+      background-color: #e63946;
+      padding: 20px 0;
+      text-align: center;
+      font-family: 'Shadows Into Light', cursive;
+      font-size: 36px;
+      color: white;
+      border-bottom: 4px solid #a4161a;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 30px auto;
+      background-color: #0000ff;
+      padding: 30px;
+      border: 4px solid #e63946;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #e63946;
+    }
+
+    h1 {
+      text-align: center;
+      color: #e63946;
+      font-family: 'Shadows Into Light', cursive;
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: block;
+      color: #ffffff;
+    }
+
+    .input-field,
+    input[type="text"],
+    select {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #e63946;
+      border-radius: 10px;
+      background-color: #ffffff;
+      color: #000;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .btn-group button {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.3s ease;
+    }
+
+    .btn-add { background-color: #e63946; }
+    .btn-clear { background-color: #f77f00; color: black; }
+    .btn-exit { background-color: #6c757d; }
+    .btn-group button:hover { opacity: 0.85; }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .task-count {
+      font-size: 15px;
+      font-weight: bold;
+      color: #ffe066;
+    }
+
+    .search-sort input,
+    .search-sort select {
+      padding: 8px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 2px solid #e63946;
+      background-color: #ffffff;
+      color: #000;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .task-list {
+      list-style: none;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 2px inset #e63946;
+      padding: 10px;
+      background-color: #ffffff;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 2px solid #e63946;
+      border-radius: 10px;
+    }
+
+    .task.completed input[type="text"] {
+      text-decoration: line-through;
+      color: #6c757d;
+    }
+
+    .task input[type="text"] {
+      border: none;
+      background: transparent;
+      color: #000;
+      font-size: 16px;
+      width: 100%;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .task-actions button {
+      padding: 6px 10px;
+      margin-left: 4px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      color: white;
+    }
+
+    .task-actions button[name="edit"] { background-color: #ffb703; color: black; }
+    .task-actions button[name="delete"] { background-color: #e63946; }
+    .task-actions button[name="complete"] { background-color: #2ec4b6; }
+
+    .urgent {
+      background-color: #ffcccc !important;
+      border-color: #e63946 !important;
+    }
+
+    .no-tasks {
+      text-align: center;
+      color: #333;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #e63946;
+      color: white;
+      margin-top: 30px;
+      font-family:'Courier New', Courier, monospace;
+      font-size: 18px;
+      border-top: 4px solid #a4161a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    🎯To-Do List
+  </div>
+
+  <!-- CONTAINER -->
+  <div class="container">
+    <form method="POST">
+      {% csrf_token %}
+      <label for="task">Enter the Task:</label>
+      {{ form.title }}
+      <div class="btn-group">
+        <button type="submit" name="add" class="btn-add">➕ Add Task</button>
+        <button type="submit" name="delete_all" class="btn-clear">🧹 Delete All</button>
+        <button type="button" onclick="window.close()" class="btn-exit">❌ Exit</button>
+      </div>
+    </form>
+
+    <div class="controls">
+      <div class="search-sort">
+        <input type="text" id="search" placeholder="🔍 Search tasks...">
+        <select id="sort">
+          <option value="default">Sort</option>
+          <option value="az">A-Z</option>
+          <option value="za">Z-A</option>
+        </select>
+      </div>
+      <div class="task-count" id="counter">Total: 0 | Completed: 0</div>
+    </div>
+
+    <ul class="task-list" id="taskList">
+      {% for task in tasks %}
+        <li class="task {% if task.completed %}completed{% endif %} {% if 'urgent' in task.title|lower or 'important' in task.title|lower %}urgent{% endif %}">
+          <form method="POST" class="task-form" style="width: 100%;">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" value="{{ task.id }}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <input type="text" name="title" value="{{ task.title }}">
+              <div class="task-actions">
+                <button type="submit" name="complete">✔</button>
+                <button type="submit" name="edit">✏️</button>
+                <button type="submit" name="delete">🗑️</button>
+              </div>
+            </div>
+          </form>
+        </li>
+      {% empty %}
+        <p class="no-tasks">No tasks available.</p>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+     © 2025 <strong>TO-DO LIST</strong>||All rights reserved.
+  </div>
+
+  <script>
+    const search = document.getElementById('search');
+    const sort = document.getElementById('sort');
+    const taskList = document.getElementById('taskList');
+    const counter = document.getElementById('counter');
+
+    function updateCounter() {
+      const tasks = taskList.querySelectorAll('.task');
+      const completed = taskList.querySelectorAll('.task.completed').length;
+      counter.textContent = `Total: ${tasks.length} | Completed: ${completed}`;
+    }
+
+    search.addEventListener('input', function () {
+      const term = this.value.toLowerCase();
+      const items = taskList.querySelectorAll('.task');
+      items.forEach(item => {
+        const text = item.querySelector('input[type="text"]').value.toLowerCase();
+        item.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+
+    sort.addEventListener('change', function () {
+      const items = Array.from(taskList.querySelectorAll('.task'));
+      const sorted = items.sort((a, b) => {
+        const textA = a.querySelector('input[type="text"]').value.toLowerCase();
+        const textB = b.querySelector('input[type="text"]').value.toLowerCase();
+        return this.value === 'az' ? textA.localeCompare(textB) : textB.localeCompare(textA);
+      });
+      sorted.forEach(item => taskList.appendChild(item));
+    });
+
+    document.addEventListener('DOMContentLoaded', updateCounter);
+  </script>
+</body>
+</html>
